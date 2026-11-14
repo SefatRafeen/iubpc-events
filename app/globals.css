@@ -1,0 +1,295 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #0a0f1a;
+  --sheet: #0f172a;
+  --raised: #131c31;
+  --ink: #ededef;
+  --muted: #94a3b8;
+  --subtle: #64748b;
+  --cobalt: #3ecf8e;
+  --purple: #7c6aef;
+  --rule: rgba(237, 237, 239, 0.16);
+  --rule-strong: rgba(62, 207, 142, 0.45);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* PC (≥ 1024px) */
+  --H: clamp(270px, min(44vh, 29vw), 450px);
+  --tabs-offset: 74px;
+  --caption-offset: 24px;
+  --arrow-offset: 30px;
+}
+
+/* Tablet (640px – 1023px) */
+@media (max-width: 1023px) {
+  :root {
+    --H: clamp(230px, min(40vh, 42vw), 360px);
+    --tabs-offset: 64px;
+    --caption-offset: 20px;
+    --arrow-offset: 26px;
+  }
+}
+
+/* Phone (< 640px) */
+@media (max-width: 639px) {
+  :root {
+    --H: clamp(190px, min(34svh, 52vw), 275px);
+    --tabs-offset: 52px;
+    --caption-offset: 16px;
+    --arrow-offset: 20px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Signature iubpc.org architectural grid background */
+.iubpc-grid-bg {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 50% 42%, rgba(62, 207, 142, 0.08) 0%, rgba(124, 106, 239, 0.05) 35%, transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-repeat: no-repeat, repeat, repeat;
+  background-size: 100% 100%, 64px 64px, 64px 64px;
+}
+
+@media (pointer: fine) {
+  html.custom-cursor-active,
+  html.custom-cursor-active body,
+  html.custom-cursor-active button,
+  html.custom-cursor-active a {
+    cursor: none;
+  }
+}
+
+/* Label system matching Leon Vasari + iubpc.org */
+.lbl {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  font-weight: 600;
+  font-size: 10.5px;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 639px) {
+  .lbl {
+    font-size: 9px;
+    letter-spacing: 0.07em;
+  }
+}
+
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--rule);
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.3s var(--ease), color 0.3s var(--ease), background-color 0.3s var(--ease);
+}
+
+@media (max-width: 639px) {
+  .box {
+    height: 22px;
+    padding: 0 7px;
+  }
+}
+
+.box:hover {
+  border-color: var(--cobalt);
+  color: var(--cobalt);
+}
+
+/* 3D Shelf & Stage */
+.shelf {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: calc(50% - var(--H) / 2 - 40px);
+  height: calc(var(--H) + 80px);
+  perspective: 2200px;
+  perspective-origin: 50% 50%;
+  touch-action: pan-y;
+  z-index: 10;
+}
+
+@media (max-width: 1023px) {
+  .shelf {
+    perspective: 1800px;
+  }
+}
+
+@media (max-width: 639px) {
+  .shelf {
+    perspective: 1450px;
+  }
+}
+
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.tape {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.face {
+  position: absolute;
+  height: var(--H);
+  top: calc(var(--H) / -2);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #020617;
+  opacity: var(--shade, 0);
+  pointer-events: none;
+}
+
+.sp {
+  width: var(--ws);
+  left: calc(var(--ws) / -2);
+  transform: translateZ(calc(var(--d) / 2));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #0d1526;
+}
+
+.cv {
+  width: var(--d);
+  left: calc(var(--d) / -2);
+  transform: rotateY(90deg) translateZ(calc(var(--ws) / 2));
+  box-shadow: 0 32px 64px -24px rgba(0, 0, 0, 0.85), 0 0 28px -8px rgba(62, 207, 142, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #0f172a;
+}
+
+/* Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 58px;
+  height: 58px;
+  margin-left: -29px;
+  margin-top: -29px;
+  pointer-events: none;
+  z-index: 120;
+  display: none;
+}
+
+@media (pointer: fine) {
+  .custom-cursor {
+    display: block;
+  }
+}
+
+.cursor-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background-color: transparent;
+  transform: scale(1);
+  transition:
+    transform 0.5s var(--ease),
+    background-color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+
+.cursor-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background-color: var(--cobalt);
+  transform: scale(1);
+  transition: transform 0.4s var(--ease);
+}
+
+.cursor-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono), monospace;
+  font-weight: 700;
+  font-size: 9.5px;
+  line-height: 1.25;
+  letter-spacing: 0.1em;
+  color: #06101e;
+  text-align: center;
+  transform: scale(0);
+  transition: transform 0.45s var(--ease);
+}
+
+.custom-cursor.spine .cursor-ring {
+  transform: scale(0.72);
+  border-color: var(--cobalt);
+}
+
+.custom-cursor.btn .cursor-ring {
+  transform: scale(0.55);
+  border-color: var(--cobalt);
+}
+
+.custom-cursor.btn .cursor-dot {
+  transform: scale(0);
+}
+
+.custom-cursor.open .cursor-ring {
+  transform: scale(1.75);
+  background-color: var(--cobalt);
+  border-color: var(--cobalt);
+}
+
+.custom-cursor.open .cursor-dot {
+  transform: scale(0);
+}
+
+.custom-cursor.open .cursor-label {
+  transform: scale(1);
+}
